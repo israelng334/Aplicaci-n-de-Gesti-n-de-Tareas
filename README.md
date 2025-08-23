@@ -29,8 +29,8 @@ Una aplicación moderna y elegante para gestionar tareas en equipo, construida c
 
 1. **Clona el repositorio**
    ```bash
-   git clone <url-del-repositorio>
-   cd task-flow
+   git clone https://github.com/Bryannmmejia/Aplicaci-n-de-Gesti-n-de-Tareas.git
+   cd Aplicaci-n-de-Gesti-n-de-Tareas
    ```
 
 2. **Instala las dependencias**
@@ -59,10 +59,10 @@ La aplicación incluye usuarios de demostración preconfigurados:
 
 | Email | Contraseña | Rol |
 |-------|------------|-----|
-| `admin@taskflow.com` | `password` | Administrador |
-| `maria@taskflow.com` | `password` | Usuario |
-| `carlos@taskflow.com` | `password` | Usuario |
-| `ana@taskflow.com` | `password` | Usuario |
+| `admin@taskflow.com` | `password123` | Administrador |
+| `maria@taskflow.com` | `password123` | Usuario |
+| `carlos@taskflow.com` | `password123` | Usuario |
+| `ana@taskflow.com` | `password123` | Usuario |
 
 ### Funcionalidades principales
 
@@ -96,64 +96,50 @@ La aplicación incluye usuarios de demostración preconfigurados:
 ## 🏗️ Estructura del Proyecto
 
 ```
-task-flow/
-├── public/
-│   └── index.html
+App-Gestion-de-Tareas/
 ├── src/
 │   ├── components/
-│   │   ├── LoginForm.js          # Formulario de autenticación
+│   │   ├── LoginForm.js          # Formulario de login
 │   │   ├── TaskList.js           # Lista de tareas con filtros
 │   │   ├── MotivationalQuote.js  # Componente de frases motivacionales
-│   │   └── PrivateRoute.js       # Protección de rutas
-│   ├── contexts/
-│   │   ├── AuthContext.js        # Contexto de autenticación
-│   │   └── TaskContext.js        # Contexto de tareas
+│   │   ├── PrivateRoute.js       # Protección de rutas
+│   │   ├── ErrorBoundary.js      # Manejo de errores
+│   │   ├── LoadingSpinner.js     # Componente de carga
+│   │   └── ConnectionStatus.js   # Estado de conexión
 │   ├── pages/
 │   │   ├── LoginPage.js          # Página de login
 │   │   └── Dashboard.js          # Dashboard principal
+│   ├── contexts/
+│   │   ├── AuthContext.js        # Contexto de autenticación
+│   │   └── TaskContext.js        # Contexto de tareas
 │   ├── services/
 │   │   ├── api.js               # Servicio de API
 │   │   └── quoteService.js      # Servicio de frases motivacionales
 │   ├── App.js                   # Componente principal
-│   ├── App.css                  # Estilos globales
-│   └── index.js                 # Punto de entrada
-├── db.json                      # Base de datos JSON
+│   ├── index.js                 # Punto de entrada
+│   └── index.css                # Estilos globales
+├── public/
+├── db.json                      # Base de datos mock
 ├── package.json                 # Dependencias y scripts
-├── tailwind.config.js          # Configuración de Tailwind
-└── README.md                   # Este archivo
+├── tailwind.config.js           # Configuración de Tailwind
+├── json-server.json             # Configuración del servidor mock
+└── README.md                    # Documentación
 ```
 
 ## 🔧 Configuración
 
 ### Variables de entorno
 
-Crea un archivo `.env` en la raíz del proyecto:
+No se requieren variables de entorno para el desarrollo local.
 
-```env
-REACT_APP_API_URL=http://localhost:3001
-REACT_APP_QUOTE_API_URL=https://api.quotable.io
-```
+### Configuración del servidor
 
-### Personalización de colores
+El servidor JSON está configurado en `json-server.json`:
+- Puerto: 3001
+- Middleware: json-server-auth
+- Base de datos: db.json
 
-Edita `tailwind.config.js` para personalizar el esquema de colores:
-
-```javascript
-theme: {
-  extend: {
-    colors: {
-      primary: {
-        50: '#eff6ff',
-        500: '#3b82f6',
-        600: '#2563eb',
-        // ... más colores
-      }
-    }
-  }
-}
-```
-
-## 📊 API Endpoints
+## 📡 API Endpoints
 
 ### Autenticación
 - `POST /login` - Iniciar sesión
@@ -161,79 +147,63 @@ theme: {
 - `POST /logout` - Cerrar sesión
 - `GET /profile` - Obtener perfil del usuario
 
+### Usuarios
+- `GET /users` - Listar usuarios
+- `GET /users/:id` - Obtener usuario específico
+
 ### Tareas
-- `GET /tasks` - Obtener todas las tareas
+- `GET /tasks` - Listar tareas (con filtros)
 - `GET /tasks/:id` - Obtener tarea específica
 - `POST /tasks` - Crear nueva tarea
 - `PATCH /tasks/:id` - Actualizar tarea
 - `DELETE /tasks/:id` - Eliminar tarea
 
-### Usuarios
-- `GET /users` - Obtener todos los usuarios
-- `GET /users/:id` - Obtener usuario específico
-
-## 🎨 Tecnologías Utilizadas
+## 🛠️ Tecnologías Utilizadas
 
 ### Frontend
-- **React 18** - Biblioteca de interfaz de usuario
-- **Tailwind CSS** - Framework de CSS utility-first
-- **Lucide React** - Iconos modernos
-- **React Router** - Enrutamiento de la aplicación
+- **React 18** - Biblioteca de UI
+- **React Router** - Enrutamiento
+- **Tailwind CSS** - Framework de CSS
+- **Lucide React** - Iconos
+- **Context API** - Estado global
 
 ### Backend (Mock)
-- **json-server** - API REST simulada
+- **json-server** - Servidor REST mock
 - **json-server-auth** - Autenticación JWT
+
+### APIs Externas
 - **Quotable API** - Frases motivacionales
 
-### Herramientas de Desarrollo
-- **Create React App** - Configuración inicial
-- **PostCSS** - Procesamiento de CSS
-- **Autoprefixer** - Prefijos CSS automáticos
-
-## 🚀 Scripts Disponibles
+## 📝 Scripts Disponibles
 
 ```bash
-# Desarrollo
-npm start          # Inicia la aplicación React
-npm run server     # Inicia el servidor JSON
+# Iniciar servidor de desarrollo
+npm start
 
-# Producción
-npm run build      # Construye la aplicación para producción
+# Construir para producción
+npm run build
 
-# Testing
-npm test           # Ejecuta las pruebas
-npm run eject      # Expone la configuración de CRA
+# Ejecutar tests
+npm test
+
+# Iniciar servidor JSON mock
+npm run server
 ```
 
 ## 🐛 Solución de Problemas
 
-### Error de conexión a la API
-```bash
-# Verifica que el servidor JSON esté corriendo
-npm run server
+Si encuentras problemas, consulta el archivo `TROUBLESHOOTING.md` que incluye:
 
-# Verifica el puerto 3001
-curl http://localhost:3001/tasks
-```
+- Errores comunes y soluciones
+- Verificación de servidores
+- Credenciales de prueba
+- Estructura de archivos
 
-### Error de autenticación
-```bash
-# Limpia el localStorage
-localStorage.clear()
+### Problemas frecuentes
 
-# Usa las credenciales de prueba
-admin@taskflow.com / password
-```
-
-### Problemas de dependencias
-```bash
-# Limpia la caché de npm
-npm cache clean --force
-
-# Reinstala las dependencias
-rm -rf node_modules package-lock.json
-npm install
-```
+1. **Error 400 en login**: Asegúrate de que el servidor mock esté corriendo
+2. **Pantalla en blanco**: Verifica que ambos servidores estén activos
+3. **Errores de CORS**: El servidor mock debe estar en puerto 3001
 
 ## 🤝 Contribución
 
@@ -243,25 +213,23 @@ npm install
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-## 📝 Licencia
+## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
+## 👨‍💻 Autor
+
+**Bryann Mejía**
+- GitHub: [@Bryannmmejia](https://github.com/Bryannmmejia)
+
 ## 🙏 Agradecimientos
 
+- [json-server](https://github.com/typicode/json-server) por el servidor mock
+- [json-server-auth](https://github.com/jeremyben/json-server-auth) por la autenticación
 - [Quotable API](https://github.com/lukePeavey/quotable) por las frases motivacionales
-- [Lucide](https://lucide.dev/) por los iconos hermosos
 - [Tailwind CSS](https://tailwindcss.com/) por el framework de CSS
-- [json-server](https://github.com/typicode/json-server) por la API mock
-
-## 📞 Soporte
-
-Si tienes alguna pregunta o problema:
-
-1. Revisa la sección de [Solución de Problemas](#-solución-de-problemas)
-2. Busca en los [Issues](https://github.com/tu-usuario/task-flow/issues)
-3. Crea un nuevo issue con detalles del problema
+- [Lucide](https://lucide.dev/) por los iconos
 
 ---
 
-**¡Disfruta gestionando tus tareas con Task Flow! 🎉**
+⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub!
