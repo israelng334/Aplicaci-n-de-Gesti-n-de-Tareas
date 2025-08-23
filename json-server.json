@@ -2,5 +2,5 @@
   "port": 3001,
   "host": "localhost",
   "watch": true,
-  "middlewares": "./node_modules/json-server-auth"
+  "middlewares": ["./node_modules/json-server-auth"]
 }
