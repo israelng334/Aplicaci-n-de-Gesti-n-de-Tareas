@@ -1,0 +1,134 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@taskflow.com",
+      "password": "password123",
+      "name": "Admin User",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "email": "maria@taskflow.com",
+      "password": "password123",
+      "name": "María García",
+      "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      "role": "user"
+    },
+    {
+      "id": 3,
+      "email": "carlos@taskflow.com",
+      "password": "password123",
+      "name": "Carlos Rodríguez",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      "role": "user"
+    },
+    {
+      "id": 4,
+      "email": "ana@taskflow.com",
+      "password": "password123",
+      "name": "Ana López",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      "role": "user"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Diseñar la interfaz de usuario",
+      "description": "Crear mockups y wireframes para la nueva funcionalidad de dashboard",
+      "status": "en_progreso",
+      "priority": "alta",
+      "assignedTo": 2,
+      "createdBy": 1,
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "dueDate": "2024-01-20T17:00:00.000Z",
+      "tags": ["diseño", "ui/ux"]
+    },
+    {
+      "id": 2,
+      "title": "Implementar autenticación JWT",
+      "description": "Configurar json-server-auth y crear endpoints de login/registro",
+      "status": "completada",
+      "priority": "alta",
+      "assignedTo": 3,
+      "createdBy": 1,
+      "createdAt": "2024-01-10T09:00:00.000Z",
+      "completedAt": "2024-01-14T16:30:00.000Z",
+      "tags": ["backend", "seguridad"]
+    },
+    {
+      "id": 3,
+      "title": "Crear componentes de tareas",
+      "description": "Desarrollar componentes reutilizables para listar y gestionar tareas",
+      "status": "pendiente",
+      "priority": "media",
+      "assignedTo": 4,
+      "createdBy": 2,
+      "createdAt": "2024-01-16T14:00:00.000Z",
+      "dueDate": "2024-01-25T17:00:00.000Z",
+      "tags": ["frontend", "react"]
+    },
+    {
+      "id": 4,
+      "title": "Configurar base de datos",
+      "description": "Preparar esquema de datos y migraciones iniciales",
+      "status": "completada",
+      "priority": "alta",
+      "assignedTo": 1,
+      "createdBy": 1,
+      "createdAt": "2024-01-08T08:00:00.000Z",
+      "completedAt": "2024-01-12T12:00:00.000Z",
+      "tags": ["backend", "database"]
+    },
+    {
+      "id": 5,
+      "title": "Implementar filtros de tareas",
+      "description": "Crear sistema de filtrado por estado, prioridad y usuario asignado",
+      "status": "en_progreso",
+      "priority": "media",
+      "assignedTo": 2,
+      "createdBy": 3,
+      "createdAt": "2024-01-17T11:00:00.000Z",
+      "dueDate": "2024-01-22T17:00:00.000Z",
+      "tags": ["frontend", "filtros"]
+    },
+    {
+      "id": 6,
+      "title": "Integrar API de frases motivacionales",
+      "description": "Conectar con Quotable API y mostrar frases en el dashboard",
+      "status": "pendiente",
+      "priority": "baja",
+      "assignedTo": 4,
+      "createdBy": 2,
+      "createdAt": "2024-01-18T13:00:00.000Z",
+      "dueDate": "2024-01-28T17:00:00.000Z",
+      "tags": ["api", "frontend"]
+    },
+    {
+      "id": 7,
+      "title": "Optimizar rendimiento",
+      "description": "Implementar lazy loading y optimizaciones de React",
+      "status": "pendiente",
+      "priority": "media",
+      "assignedTo": 3,
+      "createdBy": 1,
+      "createdAt": "2024-01-19T10:00:00.000Z",
+      "dueDate": "2024-01-30T17:00:00.000Z",
+      "tags": ["optimización", "react"]
+    },
+    {
+      "id": 8,
+      "title": "Crear documentación",
+      "description": "Escribir documentación técnica y guías de usuario",
+      "status": "en_progreso",
+      "priority": "baja",
+      "assignedTo": 1,
+      "createdBy": 2,
+      "createdAt": "2024-01-20T15:00:00.000Z",
+      "dueDate": "2024-01-31T17:00:00.000Z",
+      "tags": ["documentación"]
+    }
+  ]
+}
