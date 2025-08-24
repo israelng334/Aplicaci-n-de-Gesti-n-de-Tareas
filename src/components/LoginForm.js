@@ -224,7 +224,8 @@ const LoginForm = ({ onSwitchToRegister, className = '' }) => {
           ¿No tienes una cuenta?{' '}
           <button
             onClick={onSwitchToRegister}
-            className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+            disabled={loading}
+            className="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Regístrate aquí
           </button>

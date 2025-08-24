@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoginForm from '../components/LoginForm';
+import RegistrationForm from '../components/RegistrationForm';
 
 /**
  * Página de login con diseño moderno
@@ -41,9 +42,13 @@ const LoginPage = () => {
           </p>
         </div>
 
-        {/* Formulario */}
+        {/* Formulario - Condicional entre Login y Registro */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-100 dark:border-gray-700">
-          <LoginForm onSwitchToRegister={() => setShowRegister(true)} />
+          {showRegister ? (
+            <RegistrationForm onSwitchToLogin={() => setShowRegister(false)} />
+          ) : (
+            <LoginForm onSwitchToRegister={() => setShowRegister(true)} />
+          )}
         </div>
 
         {/* Información adicional */}

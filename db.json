@@ -3,7 +3,7 @@
     {
       "id": 1,
       "email": "admin@taskflow.com",
-      "password": "$2a$10$rQZ8N3YqX2vB5cD7eF9gH.iJ1kL2mN3oP4qR5sT6uV7wX8yZ9aA0bB1cC2d",
+      "password": "$2a$10$CP44xe0A8nL.OrK2QwkV.uI5suTaDyzHULN.ng9VYDSAAvCaqX2Xu",
       "name": "Admin User",
       "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
       "role": "admin"
@@ -11,7 +11,7 @@
     {
       "id": 2,
       "email": "maria@taskflow.com",
-      "password": "$2a$10$rQZ8N3YqX2vB5cD7eF9gH.iJ1kL2mN3oP4qR5sT6uV7wX8yZ9aA0bB1cC2d",
+      "password": "$2a$10$CP44xe0A8nL.OrK2QwkV.uI5suTaDyzHULN.ng9VYDSAAvCaqX2Xu",
       "name": "María García",
       "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
       "role": "user"
@@ -19,7 +19,7 @@
     {
       "id": 3,
       "email": "carlos@taskflow.com",
-      "password": "$2a$10$rQZ8N3YqX2vB5cD7eF9gH.iJ1kL2mN3oP4qR5sT6uV7wX8yZ9aA0bB1cC2d",
+      "password": "$2a$10$CP44xe0A8nL.OrK2QwkV.uI5suTaDyzHULN.ng9VYDSAAvCaqX2Xu",
       "name": "Carlos Rodríguez",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
       "role": "user"
@@ -27,10 +27,18 @@
     {
       "id": 4,
       "email": "ana@taskflow.com",
-      "password": "$2a$10$rQZ8N3YqX2vB5cD7eF9gH.iJ1kL2mN3oP4qR5sT6uV7wX8yZ9aA0bB1cC2d",
+      "password": "$2a$10$CP44xe0A8nL.OrK2QwkV.uI5suTaDyzHULN.ng9VYDSAAvCaqX2Xu",
       "name": "Ana López",
       "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
       "role": "user"
+    },
+    {
+      "email": "johnsmith123@gmail.com",
+      "password": "$2a$10$HTPZAR3DLHNWV6wY26HHJeOv5udQKFo1NAai27x4Evap4/C0B2S.O",
+      "name": "John Smith",
+      "role": "user",
+      "avatar": "https://images.unsplash.com/photo-639004?w=150&h=150&fit=crop&crop=face",
+      "id": 5
     }
   ],
   "tasks": [
@@ -44,7 +52,10 @@
       "createdBy": 1,
       "createdAt": "2024-01-15T10:00:00.000Z",
       "dueDate": "2024-01-20T17:00:00.000Z",
-      "tags": ["diseño", "ui/ux"]
+      "tags": [
+        "diseño",
+        "ui/ux"
+      ]
     },
     {
       "id": 2,
@@ -56,7 +67,10 @@
       "createdBy": 1,
       "createdAt": "2024-01-10T09:00:00.000Z",
       "completedAt": "2024-01-14T16:30:00.000Z",
-      "tags": ["backend", "seguridad"]
+      "tags": [
+        "backend",
+        "seguridad"
+      ]
     },
     {
       "id": 3,
@@ -68,7 +82,10 @@
       "createdBy": 2,
       "createdAt": "2024-01-16T14:00:00.000Z",
       "dueDate": "2024-01-25T17:00:00.000Z",
-      "tags": ["frontend", "react"]
+      "tags": [
+        "frontend",
+        "react"
+      ]
     },
     {
       "id": 4,
@@ -80,7 +97,10 @@
       "createdBy": 1,
       "createdAt": "2024-01-08T08:00:00.000Z",
       "completedAt": "2024-01-12T12:00:00.000Z",
-      "tags": ["backend", "database"]
+      "tags": [
+        "backend",
+        "database"
+      ]
     },
     {
       "id": 5,
@@ -92,7 +112,10 @@
       "createdBy": 3,
       "createdAt": "2024-01-17T11:00:00.000Z",
       "dueDate": "2024-01-22T17:00:00.000Z",
-      "tags": ["frontend", "filtros"]
+      "tags": [
+        "frontend",
+        "filtros"
+      ]
     },
     {
       "id": 6,
@@ -104,7 +127,10 @@
       "createdBy": 2,
       "createdAt": "2024-01-18T13:00:00.000Z",
       "dueDate": "2024-01-28T17:00:00.000Z",
-      "tags": ["api", "frontend"]
+      "tags": [
+        "api",
+        "frontend"
+      ]
     },
     {
       "id": 7,
@@ -116,7 +142,10 @@
       "createdBy": 1,
       "createdAt": "2024-01-19T10:00:00.000Z",
       "dueDate": "2024-01-30T17:00:00.000Z",
-      "tags": ["optimización", "react"]
+      "tags": [
+        "optimización",
+        "react"
+      ]
     },
     {
       "id": 8,
@@ -128,7 +157,9 @@
       "createdBy": 2,
       "createdAt": "2024-01-20T15:00:00.000Z",
       "dueDate": "2024-01-31T17:00:00.000Z",
-      "tags": ["documentación"]
+      "tags": [
+        "documentación"
+      ]
     }
   ]
 }
