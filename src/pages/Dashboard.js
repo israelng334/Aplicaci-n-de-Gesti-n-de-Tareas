@@ -336,8 +336,9 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Lista de tareas */}
             <div className="lg:col-span-2">
-              <TaskList showMyTasksOnly={activeView === 'my-tasks'} />
-            </div>
+// ...existing code...
+<TaskList showMyTasksOnly={activeView === 'my-tasks'} isAdmin={isAdmin} />
+// ...existing code...            </div>
 
             {/* Barra lateral derecha */}
             <div className="space-y-6">

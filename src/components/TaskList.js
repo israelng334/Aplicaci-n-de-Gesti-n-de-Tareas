@@ -20,7 +20,7 @@ import { useAuth } from '../contexts/AuthContext';
 /**
  * Componente para listar tareas con filtros y acciones
  */
-const TaskList = ({ showMyTasksOnly = false, className = '' }) => {
+const TaskList = ({ showMyTasksOnly = false, className = '', isAdmin }) => {
   const { tasks, loading, error, filters, updateFilters, clearFilters, completeTask, deleteTask } = useTasks();
   const { user } = useAuth();
   
@@ -377,10 +377,19 @@ const TaskList = ({ showMyTasksOnly = false, className = '' }) => {
                     </div>
 
                     {/* Menú de acciones */}
-                    <div className="relative ml-2">
+                    <div className="relative ml-2 flex items-center space-x-1">
                       <button className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded transition-colors">
                         <MoreVertical className="w-4 h-4" />
                       </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleDeleteTask(task.id)}
+                          className="p-1 text-red-500 hover:text-red-700 rounded transition-colors"
+                          title="Eliminar tarea"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
 
