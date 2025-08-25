@@ -19,13 +19,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTasks } from '../contexts/TaskContext';
 import TaskList from '../components/TaskList';
 import MotivationalQuote from '../components/MotivationalQuote';
+import CreateTaskForm from '../components/CreateTaskForm';
 
 /**
  * Componente principal del dashboard
  */
 const Dashboard = () => {
   const { user, logout } = useAuth();
-  const { getTaskStats } = useTasks();
+  const { getTaskStats, loadTasks } = useTasks();
   
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -37,6 +38,7 @@ const Dashboard = () => {
     completed: 0,
     completionRate: 0,
   });
+  const [showCreateTaskForm, setShowCreateTaskForm] = useState(false);
 
   // Manejar el tema oscuro
   useEffect(() => {
@@ -91,8 +93,41 @@ const Dashboard = () => {
     return 'Buenas noches';
   };
 
+  /**
+   * Verifica si el usuario actual es admin
+   */
+  const isAdmin = user?.role === 'admin';
+
+  /**
+   * Maneja la apertura del formulario de nueva tarea
+   */
+  const handleOpenCreateTaskForm = () => {
+    setShowCreateTaskForm(true);
+  };
+
+  /**
+   * Maneja el cierre del formulario de nueva tarea
+   */
+  const handleCloseCreateTaskForm = () => {
+    setShowCreateTaskForm(false);
+  };
+
+  /**
+   * Maneja la creación exitosa de una tarea
+   */
+  const handleTaskCreated = async () => {
+    try {
+      // Recargar tareas y estadísticas
+      await loadTasks();
+      const taskStats = getTaskStats();
+      setStats(taskStats);
+    } catch (error) {
+      console.error('Error al recargar tareas:', error);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar móvil overlay */}
       {sidebarOpen && (
         <div 
@@ -102,7 +137,7 @@ const Dashboard = () => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:mr-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Header del sidebar */}
@@ -187,7 +222,7 @@ const Dashboard = () => {
       </div>
 
       {/* Contenido principal */}
-      <div className="lg:pl-64">
+      <div className="flex-1 min-w-0">
         {/* Header principal */}
         <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -226,11 +261,20 @@ const Dashboard = () => {
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
 
-              {/* Botón de nueva tarea */}
-              <button className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors">
-                <Plus className="w-4 h-4 mr-2" />
-                Nueva Tarea
-              </button>
+              {/* Botón de nueva tarea - Solo visible para admin */}
+              {isAdmin ? (
+                <button 
+                  onClick={handleOpenCreateTaskForm}
+                  className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nueva Tarea
+                </button>
+              ) : (
+                <div className="text-xs text-gray-500 dark:text-gray-400 px-3 py-2">
+                  Solo administradores pueden crear tareas
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -362,6 +406,13 @@ const Dashboard = () => {
           </div>
         </main>
       </div>
+
+      {/* Formulario flotante para crear tareas */}
+      <CreateTaskForm
+        isOpen={showCreateTaskForm}
+        onClose={handleCloseCreateTaskForm}
+        onTaskCreated={handleTaskCreated}
+      />
     </div>
   );
 };
