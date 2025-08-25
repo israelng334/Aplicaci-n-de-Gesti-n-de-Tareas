@@ -20,13 +20,15 @@ import { useTasks } from '../contexts/TaskContext';
 import TaskList from '../components/TaskList';
 import MotivationalQuote from '../components/MotivationalQuote';
 import CreateTaskForm from '../components/CreateTaskForm';
+import { useState as useReactState } from 'react';
+import TeamManager from '../components/TeamManager';
 
 /**
  * Componente principal del dashboard
  */
 const Dashboard = () => {
-  const { user, logout } = useAuth();
-  const { getTaskStats, loadTasks } = useTasks();
+  const { user, logout, updateProfile } = useAuth();
+  const { getTaskStats, loadTasks, tasks } = useTasks();
   
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -39,6 +41,18 @@ const Dashboard = () => {
     completionRate: 0,
   });
   const [showCreateTaskForm, setShowCreateTaskForm] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [settingsForm, setSettingsForm] = useState({ name: user?.name || '', email: user?.email || '', password: '' });
+  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || '');
+  useEffect(() => {
+    setSettingsForm({ name: user?.name || '', email: user?.email || '', password: '' });
+    setAvatarPreview(user?.avatar || '');
+  }, [user]);
+
+  // Estado de notificaciones
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [latestAssignedTask, setLatestAssignedTask] = useState(null);
+  const [hasNewNotification, setHasNewNotification] = useState(false);
 
   // Manejar el tema oscuro
   useEffect(() => {
@@ -56,6 +70,26 @@ const Dashboard = () => {
     const taskStats = getTaskStats();
     setStats(taskStats);
   }, [getTaskStats]);
+
+  // Calcular la última tarea asignada al usuario y si hay notificación nueva
+  useEffect(() => {
+    if (!user) return;
+    const assignedToUser = tasks
+      .filter(t => t.assignedTo === user.id)
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+    const latest = assignedToUser[0] || null;
+    setLatestAssignedTask(latest || null);
+
+    // Control del punto rojo (badge) por usuario
+    const storageKey = `lastSeenNotification_user_${user.id}`;
+    const lastSeenId = localStorage.getItem(storageKey);
+    if (latest && String(latest.id) !== String(lastSeenId)) {
+      setHasNewNotification(true);
+    } else {
+      setHasNewNotification(false);
+    }
+  }, [tasks, user]);
 
   /**
    * Cambia entre modo claro y oscuro
@@ -126,6 +160,19 @@ const Dashboard = () => {
     }
   };
 
+  /**
+   * Maneja el click del botón de notificaciones
+   */
+  const handleToggleNotifications = () => {
+    setShowNotifications(prev => !prev);
+    if (!showNotifications && latestAssignedTask && user) {
+      // Al abrir, marcar como vista la última notificación
+      const storageKey = `lastSeenNotification_user_${user.id}`;
+      localStorage.setItem(storageKey, String(latestAssignedTask.id));
+      setHasNewNotification(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar móvil overlay */}
@@ -182,12 +229,22 @@ const Dashboard = () => {
             <span>Mis Tareas</span>
           </button>
 
-          <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+          <button
+            onClick={() => setActiveView('teams')}
+            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              activeView === 'teams'
+                ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
+                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+            }`}
+          >
             <Users className="w-5 h-5" />
             <span>Equipo</span>
           </button>
 
-          <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+          <button
+            onClick={() => setShowSettings(true)}
+            className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          >
             <Settings className="w-5 h-5" />
             <span>Configuración</span>
           </button>
@@ -256,10 +313,49 @@ const Dashboard = () => {
               </button>
 
               {/* Notificaciones */}
-              <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors relative">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={handleToggleNotifications}
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors relative"
+                  title="Notificaciones"
+                >
+                  <Bell className="w-5 h-5" />
+                  {hasNewNotification && (
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                  )}
+                </button>
+
+                {/* Dropdown de notificaciones */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                    <div className="p-4">
+                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Última tarea asignada</h4>
+                      {!latestAssignedTask ? (
+                        <p className="text-xs text-gray-500 dark:text-gray-400">No tienes tareas asignadas recientemente.</p>
+                      ) : (
+                        <div className="flex items-start space-x-3">
+                          <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center mt-1">
+                            <CheckSquare className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{latestAssignedTask.title}</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">{latestAssignedTask.description}</p>
+                            <div className="flex items-center gap-3 mt-2">
+                              <span className="inline-flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                <Clock className="w-3 h-3 mr-1" />
+                                {latestAssignedTask.dueDate ? new Date(latestAssignedTask.dueDate).toLocaleDateString() : 'Sin fecha'}
+                              </span>
+                              <span className="inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 capitalize">
+                                {latestAssignedTask.priority || 'media'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Botón de nueva tarea - Solo visible para admin */}
               {isAdmin ? (
@@ -334,11 +430,23 @@ const Dashboard = () => {
 
           {/* Contenido principal */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Lista de tareas */}
-            <div className="lg:col-span-2">
-// ...existing code...
+            {/* Lista de tareas o gestión de equipos */}
+            {activeView === 'teams' ? (
+              <div className="lg:col-span-2">
+                {isAdmin ? (
+                  <TeamManager />
+                ) : (
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-soft border border-gray-100 dark:border-gray-700">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Gestión de Equipos</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Solo los administradores pueden gestionar equipos.</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="lg:col-span-2">
 <TaskList showMyTasksOnly={activeView === 'my-tasks'} isAdmin={isAdmin} />
-// ...existing code...            </div>
+              </div>
+            )}
 
             {/* Barra lateral derecha */}
             <div className="space-y-6">
@@ -414,6 +522,130 @@ const Dashboard = () => {
         onClose={handleCloseCreateTaskForm}
         onTaskCreated={handleTaskCreated}
       />
+
+      {/* Modal de Configuración */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setShowSettings(false)}>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Configuración de la Cuenta</h3>
+            <div className="space-y-4">
+              {/* Avatar Preview */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Avatar</label>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={avatarPreview || user?.avatar}
+                    alt={user?.name}
+                    className="w-16 h-16 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+                  />
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const img = new Image();
+                          img.onload = () => {
+                            // Resize to square 128x128 to fit preview nicely
+                            const canvas = document.createElement('canvas');
+                            const size = 128;
+                            canvas.width = size;
+                            canvas.height = size;
+                            const ctx = canvas.getContext('2d');
+                            if (!ctx) return;
+                            // cover: center-crop
+                            const aspect = img.width / img.height;
+                            let sx = 0, sy = 0, sw = img.width, sh = img.height;
+                            if (aspect > 1) {
+                              // wider than tall
+                              sh = img.height;
+                              sw = sh;
+                              sx = (img.width - sw) / 2;
+                            } else if (aspect < 1) {
+                              // taller than wide
+                              sw = img.width;
+                              sh = sw;
+                              sy = (img.height - sh) / 2;
+                            }
+                            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, size, size);
+                            const dataUrl = canvas.toDataURL('image/png');
+                            setAvatarPreview(dataUrl);
+                          };
+                          if (typeof reader.result === 'string') {
+                            img.src = reader.result;
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                      className="block text-sm text-gray-700 dark:text-gray-300"
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Sube una imagen cuadrada. Se ajustará automáticamente.</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre</label>
+                <input
+                  type="text"
+                  value={settingsForm.name}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                <input
+                  type="email"
+                  value={settingsForm.email}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, email: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Contraseña</label>
+                <input
+                  type="password"
+                  value={settingsForm.password}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, password: e.target.value }))}
+                  placeholder="Dejar en blanco para no cambiar"
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-end space-x-3 mt-6">
+              <button
+                onClick={() => setShowSettings(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    const payload = { name: settingsForm.name, email: settingsForm.email };
+                    if (settingsForm.password && settingsForm.password.trim().length > 0) {
+                      payload.password = settingsForm.password;
+                    }
+                    if (avatarPreview) {
+                      payload.avatar = avatarPreview;
+                    }
+                    await updateProfile(payload);
+                    setShowSettings(false);
+                  } catch (e) {
+                    console.error('Error al actualizar perfil:', e);
+                  }
+                }}
+                className="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors"
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

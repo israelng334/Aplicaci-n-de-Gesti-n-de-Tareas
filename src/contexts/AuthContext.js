@@ -106,7 +106,17 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (profileData) => {
     try {
       setError(null);
-      const updatedUser = await apiService.updateProfile(profileData);
+      // Intentar /profile; si no existe, usar /users/:id
+      let updatedUser;
+      try {
+        updatedUser = await apiService.updateProfile(profileData);
+      } catch (e) {
+        if (user?.id) {
+          updatedUser = await apiService.updateUser(user.id, profileData);
+        } else {
+          throw e;
+        }
+      }
       setUser(updatedUser);
       return updatedUser;
     } catch (error) {

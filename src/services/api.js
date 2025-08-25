@@ -123,6 +123,26 @@ class ApiService {
     return await this.request('/profile');
   }
 
+  /**
+   * Actualiza el perfil del usuario autenticado
+   */
+  async updateProfile(profileData) {
+    return await this.request('/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(profileData),
+    });
+  }
+
+  /**
+   * Actualiza un usuario por ID
+   */
+  async updateUser(id, data) {
+    return await this.request(`/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
   // ===== USUARIOS =====
 
   /**
@@ -209,6 +229,44 @@ class ApiService {
   async assignTask(id, userId) {
     return await this.updateTask(id, {
       assignedTo: userId,
+    });
+  }
+
+  // ===== EQUIPOS =====
+
+  /**
+   * Obtiene todos los equipos
+   */
+  async getTeams() {
+    return await this.request('/teams');
+  }
+
+  /**
+   * Crea un nuevo equipo
+   */
+  async createTeam(teamData) {
+    return await this.request('/teams', {
+      method: 'POST',
+      body: JSON.stringify(teamData),
+    });
+  }
+
+  /**
+   * Actualiza un equipo existente
+   */
+  async updateTeam(id, teamData) {
+    return await this.request(`/teams/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(teamData),
+    });
+  }
+
+  /**
+   * Elimina un equipo
+   */
+  async deleteTeam(id) {
+    return await this.request(`/teams/${id}`, {
+      method: 'DELETE',
     });
   }
 }

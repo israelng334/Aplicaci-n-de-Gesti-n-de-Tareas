@@ -133,6 +133,49 @@ export const TaskProvider = ({ children }) => {
   };
 
   /**
+   * Marca múltiples tareas como completadas
+   */
+  const completeMultipleTasks = async (taskIds) => {
+    try {
+      setError(null);
+      
+      const promises = taskIds.map(id => apiService.completeTask(id));
+      const completedTasks = await Promise.all(promises);
+      
+      setTasks(prevTasks =>
+        prevTasks.map(task => {
+          const completedTask = completedTasks.find(ct => ct.id === task.id);
+          return completedTask || task;
+        })
+      );
+      
+      return completedTasks;
+    } catch (error) {
+      setError(error.message);
+      throw error;
+    }
+  };
+
+  /**
+   * Elimina múltiples tareas
+   */
+  const deleteMultipleTasks = async (taskIds) => {
+    try {
+      setError(null);
+      
+      const promises = taskIds.map(id => apiService.deleteTask(id));
+      await Promise.all(promises);
+      
+      setTasks(prevTasks =>
+        prevTasks.filter(task => !taskIds.includes(task.id))
+      );
+    } catch (error) {
+      setError(error.message);
+      throw error;
+    }
+  };
+
+  /**
    * Asigna una tarea a un usuario
    */
   const assignTask = async (id, userId) => {
@@ -147,6 +190,28 @@ export const TaskProvider = ({ children }) => {
         )
       );
       
+      return assignedTask;
+    } catch (error) {
+      setError(error.message);
+      throw error;
+    }
+  };
+
+  /**
+   * Asigna una tarea a un equipo (por convención, assignedTo almacenará un objeto { teamId })
+   */
+  const assignTaskToTeam = async (id, teamId) => {
+    try {
+      setError(null);
+
+      const assignedTask = await apiService.updateTask(id, { assignedTo: { teamId } });
+
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task.id === id ? assignedTask : task
+        )
+      );
+
       return assignedTask;
     } catch (error) {
       setError(error.message);
@@ -231,7 +296,10 @@ export const TaskProvider = ({ children }) => {
     updateTask,
     deleteTask,
     completeTask,
+    completeMultipleTasks,
+    deleteMultipleTasks,
     assignTask,
+    assignTaskToTeam,
     updateFilters,
     clearFilters,
     getTaskStats,
